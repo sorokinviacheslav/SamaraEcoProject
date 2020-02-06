@@ -13,6 +13,15 @@
           type="javax.sql.DataSource"
           url="jdbc:postgresql://localhost/eco"
           username="postgres"/>-->
+    <!--<Resource driverClassName="org.hsqldb.jdbc.JDBCDriver"
+          maxIdle="2"
+          maxTotal="20"
+          maxWaitMillis="5000"
+          name="jdbc/CubaDS"
+          password=""
+          type="javax.sql.DataSource"
+          url="jdbc:hsqldb:hsql://localhost:9010/musor-EiHVv6yak"
+          username="sa"/>-->
     <Resource driverClassName="org.hsqldb.jdbc.JDBCDriver"
               maxIdle="2"
               maxTotal="20"

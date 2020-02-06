@@ -10,7 +10,7 @@ create table ECO_ADDRESS (
     DELETED_BY varchar(50),
     --
     COORDINATES_ID varchar(36) not null,
-    STREET_ID varchar(36) not null,
+    STREET_ID varchar(36),
     STREET_NUMBER integer not null,
     ADDRESS_PARAMS varchar(10),
     --
@@ -46,8 +46,8 @@ create table ECO_ORGANIZATION (
     DELETED_BY varchar(50),
     --
     NAME varchar(255) not null,
-    INN varchar(20) not null,
-    DESCRIPTION varchar(1000),
+    INN varchar(20),
+    DESCRIPTION varchar(1000) not null,
     --
     primary key (ID)
 )^
@@ -64,6 +64,7 @@ create table ECO_STREET (
     DELETED_BY varchar(50),
     --
     NAME varchar(255) not null,
+    STREET_TYPE integer not null,
     --
     primary key (ID)
 )^
@@ -79,13 +80,12 @@ create table ECO_BUILDING (
     DELETE_TS timestamp,
     DELETED_BY varchar(50),
     --
-    ADDRESS_ID varchar(36) not null,
+    ADDRESS_ID varchar(36),
     DESCRIPTION varchar(1000),
     --
     primary key (ID)
 )^
 -- end ECO_BUILDING
-
 -- begin ECO_BUILDING_ORGANIZATION_LINK
 create table ECO_BUILDING_ORGANIZATION_LINK (
     BUILDING_ID varchar(36) not null,
