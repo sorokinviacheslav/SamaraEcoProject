@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://browseCaption"
+        focusComponent="streetsTable"
+        messagesPack="com.magenta.samara.eco.web.screens.street">
+    <data readOnly="true">
+        <collection id="streetsDc"
+                    class="com.magenta.samara.eco.entity.Street"
+                    view="_local">
+            <loader id="streetsDl">
+                <query>
+                    <![CDATA[select e from eco_Street e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="streetsTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="streetsTable"
+                dataLoader="streetsDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="streetsTable"
+                    width="100%"
+                    dataContainer="streetsDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="name"/>
+                <column id="streetType"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="streetsTable.create"/>
+                <button id="removeBtn" action="streetsTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

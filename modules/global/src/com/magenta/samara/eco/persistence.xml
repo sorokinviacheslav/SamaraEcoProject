@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+    <persistence-unit name="SamaraEcoProject" transaction-type="RESOURCE_LOCAL">
+
+        <class>com.magenta.samara.eco.entity.Organization</class>
+        <class>com.magenta.samara.eco.entity.Address</class>
+        <class>com.magenta.samara.eco.entity.Street</class>
+        <class>com.magenta.samara.eco.entity.Building</class>
+        <class>com.magenta.samara.eco.entity.Point</class>
+    </persistence-unit>
+</persistence>

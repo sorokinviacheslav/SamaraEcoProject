@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
+
+    <view entity="eco_Building" name="building-view" extends="_local">
+        <property name="address" view="_minimal"/>
+        <property name="organizations" view="_minimal"/>
+    </view>
+    <view entity="eco_Building" name="building-view_1" extends="_local"/>
+    <view entity="eco_Address" name="address-view" extends="_local">
+        <property name="coordinates" view="_minimal"/>
+        <property name="street" view="_minimal"/>
+    </view>
+    <view entity="eco_Building" name="building-view_2" extends="_local">
+        <property name="address" view="_minimal"/>
+        <property name="organizations" view="_minimal"/>
+    </view>
+    <view entity="eco_Organization" name="organization-view" extends="_local">
+        <property name="buildings" view="_minimal"/>
+    </view>
+    <view entity="eco_Building" name="building-field-inspector-view" extends="_local">
+        <property name="address" view="_minimal">
+            <property name="coordinates" view="_minimal"/>
+        </property>
+        <property name="organizations" view="_minimal">
+            <property name="inn"/>
+            <property name="description"/>
+        </property>
+    </view>
+    <view entity="eco_Building" name="building-field-inspector-view-edit" extends="_local"/>
+    <view entity="eco_Building" name="building-field-inspector-view-create" extends="_local">
+        <property name="address" view="_minimal"/>
+        <property name="organizations" view="_minimal"/>
+    </view>
+    <view entity="eco_Organization" name="organization-view_1" extends="_local"/>
+</views>

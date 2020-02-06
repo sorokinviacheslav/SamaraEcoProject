@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:12
+    environment:
+      - POSTGRES_DB=eco
+      - POSTGRES_PASSWORD=cuba
+    ports:
+      - "5433:5432"
+  web:
+    image: eco
+    volumes:
+      - /Users/Sorokin/eco-home:/opt/eco-home
+    ports:
+      - "8080:8080"
