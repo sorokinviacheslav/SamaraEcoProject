@@ -10,7 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-@NamePattern("%s|name")
+@NamePattern("%s %s %s|name,inn,description")
 @Table(name = "ECO_ORGANIZATION")
 @Entity(name = "eco_Organization")
 public class Organization extends StandardEntity {

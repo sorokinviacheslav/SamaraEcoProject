@@ -264,8 +264,8 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
                 .show();
     }
 
-    @Subscribe("organizationsTable.addOrg")
-    public void onOrganizationsTableAddOrg(Action.ActionPerformedEvent event) {
+    @Subscribe("addOrgButton")
+    public void onAddOrgButtonClick(Button.ClickEvent event) {
         screenBuilders.lookup(organizationsTable)
                 .withOpenMode(OpenMode.DIALOG)
                 .build()
@@ -274,6 +274,11 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
 
         @Subscribe(id = "buildingsDc", target = Target.DATA_CONTAINER)
     public void onBuildingsDcCollectionChange(CollectionContainer.CollectionChangeEvent<Building> event) {
+            if(event.getChangeType().equals(CollectionChangeType.SET_ITEM)) {
+                buildingsDl.setView("building-field-inspector-view");
+                buildingsDl.load();
+                return;
+            }
         if(event.getChangeType().equals(CollectionChangeType.REMOVE_ITEMS)) {
             addressesDl.load();
         }
