@@ -3,6 +3,8 @@ package com.magenta.samara.eco.web.screens.building;
 import com.haulmont.charts.gui.components.map.MapViewer;
 import com.haulmont.charts.gui.map.model.InfoWindow;
 import com.haulmont.charts.gui.map.model.Marker;
+import com.haulmont.charts.gui.map.model.base.MarkerImage;
+import com.haulmont.charts.web.gui.components.map.google.base.MarkerImageDelegate;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Metadata;
@@ -168,6 +170,16 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         for(Building b:blds) {
             Marker marker = map.createMarker(b.getDescription(), map.createGeoPoint(b.getAddress().getCoordinates().getLatitude(), b.getAddress().getCoordinates().getLongitude()), false);
             marker.setClickable(true);
+            MarkerImage imRed =map.createMarkerImage("https://cdn1.iconfinder.com/data/icons/social-messaging-ui-color/254000/67-512.png");
+            MarkerImage imGreen =map.createMarkerImage("https://cdn1.iconfinder.com/data/icons/basic-ui-elements-coloricon/21/06_1-512.png");
+            imRed.setScaledSize(map.createSize(50.0,50.0));
+            imGreen.setScaledSize(map.createSize(40.0,40.0));
+            if(b.getOrganizations()==null||b.getOrganizations().size()<1) {
+                marker.setIcon(imRed);
+            }
+            else {
+                marker.setIcon(imGreen);
+            }
             map.addMarker(marker);
         }
     }
@@ -178,6 +190,11 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         streetNumberLookupField.setValue(null);
     }
 
+    @Subscribe("buildingsTable")
+    public void onBuildingsTableSelection(Table.SelectionEvent<Building> event) {
+        if(!event.isUserOriginated()||event.getSource().getSingleSelected()==null) return;
+        map.setCenter(map.createGeoPoint(event.getSource().getSingleSelected().getAddress().getCoordinates().getLatitude(), event.getSource().getSingleSelected().getAddress().getCoordinates().getLongitude()));
+    }
 
     @Subscribe("createBtn")
     public void onCreateBtnClick(Button.ClickEvent event) {
