@@ -33,7 +33,7 @@ cuba {
     }
     tomcat {
         dir = "$project.rootDir/deploy/tomcat" 
-        port = '8071' 
+        port = '9090' 
         }
 }
 
@@ -42,7 +42,7 @@ dependencies {
     appComponent("com.haulmont.charts:charts-global:$cubaVersion")
 }
 
-def hsql = 'org.hsqldb:hsqldb:2.4.1'
+def postgres = 'org.postgresql:postgresql:42.2.5'
 
 configure([globalModule, coreModule, webModule]) {
     apply(plugin: 'java')
@@ -88,8 +88,8 @@ configure(coreModule) {
     dependencies {
         compile(globalModule)
         compileOnly(servletApi)
-        jdbc(hsql)
-        testRuntime(hsql)
+        jdbc(postgres)
+        testRuntime(postgres)
     }
 
     task cleanConf(description: 'Cleans up conf directory') {
@@ -109,19 +109,19 @@ configure(coreModule) {
     }
 
     task createDb(dependsOn: assembleDbScripts, description: 'Creates local database', type: CubaDbCreation) {
-        dbms = 'hsql'
-        host = 'localhost:9010'
-        dbName = 'eco-sFQrB4vba'
-        dbUser = 'sa'
-        dbPassword = ''
+        dbms = 'postgres'
+        host = 'localhost'
+        dbName = 'eco'
+        dbUser = 'postgres'
+        dbPassword = 'cuba'
     }
 
     task updateDb(dependsOn: assembleDbScripts, description: 'Updates local database', type: CubaDbUpdate) {
-        dbms = 'hsql'
-        host = 'localhost:9010'
-        dbName = 'eco-sFQrB4vba'
-        dbUser = 'sa'
-        dbPassword = ''
+        dbms = 'postgres'
+        host = 'localhost'
+        dbName = 'eco'
+        dbUser = 'postgres'
+        dbPassword = 'cuba'
     }
 }
 
@@ -194,15 +194,16 @@ task buildUberJar(type: CubaUberJarBuilding) {
     coreJettyEnvPath = 'modules/core/web/META-INF/jetty-env.xml'
     logbackConfigurationFile = 'etc/uber-jar-logback.xml'
     singleJar = true
-    appProperties = ['cuba.automaticDatabaseUpdate': false]
-    webPort = 9090
+    appProperties = ['cuba.automaticDatabaseUpdate': true]
 }
 task buildWar(type: CubaWarBuilding) {
     includeJdbcDriver = true
     includeContextXml = true
-    appProperties = ['cuba.automaticDatabaseUpdate': true]
-    appHome = '../app_home'
-    coreContextXmlPath = 'modules/core/web/META-INF/war-context.xml'
-    logbackConfigurationFile = 'etc/war-logback.xml'
     singleWar = false
+    appProperties = [
+            'cuba.automaticDatabaseUpdate': true,
+            'cuba.webPort': 9090,
+            'cuba.connectionUrlList': 'http://localhost:9090/app-core'
+    ]
+    appHome = '${app.home}'
 }

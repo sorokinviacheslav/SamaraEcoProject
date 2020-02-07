@@ -7,10 +7,10 @@
       maxTotal="20"
       maxIdle="2"
       maxWaitMillis="5000"
-      driverClassName="org.hsqldb.jdbc.JDBCDriver"
-      url="jdbc:hsqldb:hsql://localhost:9010/eco-sFQrB4vba"
-      username="sa"
-      password=""/>
+      driverClassName="org.postgresql.Driver"
+      url="jdbc:postgresql://localhost/eco"
+      username="postgres"
+      password="cuba"/>
 
     <!-- Switch off session serialization -->
     <Manager pathname=""/>
