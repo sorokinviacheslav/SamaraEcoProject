@@ -4,7 +4,6 @@ import com.haulmont.charts.gui.components.map.MapViewer;
 import com.haulmont.charts.gui.map.model.InfoWindow;
 import com.haulmont.charts.gui.map.model.Marker;
 import com.haulmont.charts.gui.map.model.base.MarkerImage;
-import com.haulmont.charts.web.gui.components.map.google.base.MarkerImageDelegate;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Metadata;
@@ -25,9 +24,7 @@ import com.magenta.samara.eco.entity.Street;
 import com.magenta.samara.eco.service.AddressManipulationService;
 
 import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @UiController("eco_BuildingFieldInspector.browse")
 @UiDescriptor("building-field-inspector-browse.xml")
@@ -308,5 +305,4 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         createBtnOrg.setEnabled(buildingsTable.getSingleSelected()!=null);
         addOrgButton.setEnabled(buildingsTable.getSingleSelected()!=null);
     }
-
 }
