@@ -308,7 +308,6 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         addOrgButton.setEnabled(buildingsTable.getSingleSelected()!=null);
     }
 
-
     //comment this to remove test clastorization
     /*@Subscribe("map")
     public void onMapMapMove(MapViewer.MapMoveEvent event) {
