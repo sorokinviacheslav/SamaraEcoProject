@@ -1,8 +1,7 @@
 package com.magenta.samara.eco.web.screens.building;
 
 import com.haulmont.charts.gui.components.map.MapViewer;
-import com.haulmont.charts.gui.map.model.InfoWindow;
-import com.haulmont.charts.gui.map.model.Marker;
+import com.haulmont.charts.gui.map.model.*;
 import com.haulmont.charts.gui.map.model.base.MarkerImage;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Messages;
@@ -73,8 +72,11 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
     @Inject
     private CollectionContainer<Building> buildingsDc;
 
+    private List<Circle> circles;
+
     @Subscribe
     public void onInit(InitEvent event) {
+        circles=new ArrayList<>();
         map.addMarkerClickListener(ev -> {
             Marker marker = ev.getMarker();
             Building bld = addressManipulationService.getBuildingByCoordinates(marker.getPosition().getLatitude(),marker.getPosition().getLongitude());
@@ -305,4 +307,87 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         createBtnOrg.setEnabled(buildingsTable.getSingleSelected()!=null);
         addOrgButton.setEnabled(buildingsTable.getSingleSelected()!=null);
     }
+
+
+    //comment this to remove test clastorization
+    /*@Subscribe("map")
+    public void onMapMapMove(MapViewer.MapMoveEvent event) {
+        for(Circle c:circles) {
+            map.removeCircleOverlay(c);
+        }
+        circles.clear();
+        updateMapMarkers(buildingsDc.getItems());
+        if(event.getZoom()<=13.0) {
+            clusterizeMapMarkers();
+        }
+    }
+
+    private void clusterizeMapMarkers() {
+        if(map.getMarkers()==null||map.getMarkers().size()<1) return;
+        Collection<Marker> markers=map.getMarkers();
+        List<Set<Marker>> neighbourTable = new ArrayList<>();
+        for(Marker m: markers) {
+            double x = m.getPosition().getLatitude();
+            double y = m.getPosition().getLongitude();
+            Set<Marker> neighbours =new HashSet<>();
+            neighbours.add(m);
+            for(Marker n: markers) {
+                if(m.equals(n)) continue;
+                double xX = n.getPosition().getLatitude();
+                double yY = n.getPosition().getLongitude();
+                if(neighbours.size()>2) break;
+                if(Math.sqrt(Math.pow(x-xX,2.0)+Math.pow(y-yY,2.0))<=30.0) {
+                    neighbours.add(n);
+                }
+            }
+            if(neighbourTable.size()>0) {
+                boolean equal = false;
+                for (Set<Marker> list:neighbourTable) {
+                    if(list.equals(neighbours)) {
+                        equal=true;
+                        break;
+                    }
+                }
+                if(!equal) {
+                    neighbourTable.add(neighbours);
+                }
+            }
+            else {
+                neighbourTable.add(neighbours);
+            }
+        }
+        for(Set<Marker> row:neighbourTable) {
+            Circle circle;
+            if (row.size() == 1) {
+                circle = map.createCircle(((Marker) row.toArray()[0]).getPosition(), 100.0);
+                circle.setFillOpacity(0.5);
+                map.addCircleOverlay(circle);
+                map.removeMarker((Marker) row.toArray()[0]);
+            } else if (row.size() == 2) {
+                double x1 = ((Marker) row.toArray()[0]).getPosition().getLatitude();
+                double y1 = ((Marker) row.toArray()[0]).getPosition().getLongitude();
+                double x2 = ((Marker) row.toArray()[1]).getPosition().getLatitude();
+                double y2 = ((Marker) row.toArray()[1]).getPosition().getLongitude();
+                circle = map.createCircle(map.createGeoPoint((x1 + x2) / 2.0, (y1 + y2) / 2.0), 200.0);
+                circle.setFillOpacity(0.5);
+                map.addCircleOverlay(circle);
+                map.removeMarker((Marker) row.toArray()[0]);
+                map.removeMarker((Marker) row.toArray()[1]);
+            } else {
+                double x1 = ((Marker) row.toArray()[0]).getPosition().getLatitude();
+                double y1 = ((Marker) row.toArray()[0]).getPosition().getLongitude();
+                double x2 = ((Marker) row.toArray()[1]).getPosition().getLatitude();
+                double y2 = ((Marker) row.toArray()[1]).getPosition().getLongitude();
+                circle = map.createCircle(map.createGeoPoint((x1 + x2) / 2.0, (y1 + y2) / 2.0), 400.0);
+                circle.setFillOpacity(0.5);
+                map.addCircleOverlay(circle);
+                map.removeMarker((Marker) row.toArray()[0]);
+                map.removeMarker((Marker) row.toArray()[1]);
+                map.removeMarker((Marker) row.toArray()[2]);
+                            }
+            circles.add(circle);
+        }
+    }*/
+
+
 }

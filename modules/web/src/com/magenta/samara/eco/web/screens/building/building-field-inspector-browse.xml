@@ -78,7 +78,7 @@
                                 caption="&#1054;&#1088;&#1075;&#1072;&#1085;&#1080;&#1079;&#1072;&#1094;&#1080;&#1080; &#1074; &#1079;&#1076;&#1072;&#1085;&#1080;&#1080;">
                         <actions>
                             <action id="editOrg" type="edit"/>
-                            <action id="removeOrg" type="remove"/>
+                            <action id="exclude" type="exclude"/>
                         </actions>
                         <columns>
                             <column id="name"/>
@@ -90,6 +90,7 @@
                             <button id="createBtnOrg" enable="false" caption="&#1053;&#1086;&#1074;&#1072;&#1103; &#1086;&#1088;&#1075;&#1072;&#1085;&#1080;&#1079;&#1072;&#1094;&#1080;&#1103;"/>
                             <button id="editBtnOrg" action="organizationsTable.editOrg"/>
                             <button id="addOrgButton" enable="false" caption="Добавить организацию"/>
+                            <button id="removeOrgButton" enable="false" caption="Удалить организацию" action="organizationsTable.exclude"/>
                         </buttonsPanel>
                     </groupTable>
                 </vbox>

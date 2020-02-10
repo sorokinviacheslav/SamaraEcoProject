@@ -22,6 +22,17 @@
                 applyTo="organizationsTable"
                 dataLoader="organizationsDl">
             <properties include=".*"/>
+            <custom name="name"
+                    caption="Find by name"
+                    paramClass="java.lang.String">
+                lower({E}.name) like concat('%', ?, '%')
+            </custom>
+            <custom name="building"
+                    caption="Find by address"
+                    paramClass="java.lang.String"
+            join="join {E}.buildings b}">
+                lower(b.address.street.name) like concat('%', ?, '%') or upper(b.address.street.name) like concat('%', ?, '%') or b.address.street.name like concat('%', ?, '%')
+            </custom>
         </filter>
         <groupTable id="organizationsTable"
                     width="100%"
