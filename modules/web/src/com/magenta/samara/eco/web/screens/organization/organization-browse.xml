@@ -34,6 +34,7 @@
                 lower(b.address.street.name) like concat('%', ?, '%') or upper(b.address.street.name) like concat('%', ?, '%') or b.address.street.name like concat('%', ?, '%')
             </custom>
         </filter>
+        <textArea id="testTextArea"></textArea>
         <groupTable id="organizationsTable"
                     width="100%"
                     dataContainer="organizationsDc">
