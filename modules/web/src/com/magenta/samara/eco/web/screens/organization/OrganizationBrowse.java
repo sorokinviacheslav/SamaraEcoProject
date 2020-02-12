@@ -5,6 +5,8 @@ import com.haulmont.cuba.gui.model.CollectionContainer;
 import com.haulmont.cuba.gui.screen.*;
 import com.magenta.samara.eco.entity.Organization;
 import com.magenta.samara.eco.mentionjs.MentionJsExtension;
+import com.magenta.samara.eco.sliderjs.SliderServerComponent;
+import com.vaadin.ui.Layout;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -31,6 +33,20 @@ public class OrganizationBrowse extends StandardLookup<Organization> {
             list.add(o.getName());
         }
         extension.setUsers(list);
+        SliderServerComponent slider = new SliderServerComponent();
+        slider.setValue(new double[]{
+               0.0,
+                10.0
+        });
+        slider.setMinValue(0.0);
+        slider.setMaxValue(10.0);
+        slider.setWidth("250px");
+        /*slider.setListener(newValue -> {
+            getEditedEntity().setMinDiscount(newValue[0]);
+            getEditedEntity().setMaxDiscount(newValue[1]);
+        });*/
+
+        this.getWindow().unwrap(Layout.class).addComponent(slider);
     }
 
 

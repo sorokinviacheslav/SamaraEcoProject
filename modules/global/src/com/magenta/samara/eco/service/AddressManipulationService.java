@@ -12,6 +12,7 @@ public interface AddressManipulationService {
     boolean addNewBuilding(AddressInfo addrInfo, BuildingInfo bldInfo);
     boolean isAddressInDB(AddressInfo addrInfo);
     Building getBuildingByCoordinates(Double latitude, Double longitude);
+    boolean addNewAddress(AddressInfo addrInfo);
 
     class AddressInfo implements Serializable {
         private String streetName;

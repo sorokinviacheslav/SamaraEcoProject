@@ -68,6 +68,41 @@ public class AddressManipulationServiceBean implements AddressManipulationServic
 
     @Override
     @Transactional
+    public boolean addNewAddress(AddressInfo addrInfo) {
+        EntityManager em = persistence.getEntityManager();
+        if(isAddressExist(em,addrInfo)) return false;
+        String par = "Самара, "+addrInfo.getStreetName()+" "+messages.getMessage(addrInfo.getStreetType())+" "+addrInfo.getStreetNumber()+" "+addrInfo.getAddressParams();
+        JSONObject json = null;
+        try {
+            json = geoJsonTools.getGeoJson(par);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        if(!geoJsonTools.checkJsonFullMatch(json)) return false;
+        JSONArray coord = geoJsonTools.getCoordinatesAsArray(json);
+        Point p = metadata.create(Point.class);
+        p.setLatitude(coord.getDouble(1));
+        p.setLongitude(coord.getDouble(0));
+        em.persist(p);
+        Street str = getStreet(em,addrInfo.getStreetName(),addrInfo.getStreetType());
+        if(str==null) {
+            str = metadata.create(Street.class);
+            str.setName(addrInfo.getStreetName());
+            str.setStreetType(addrInfo.getStreetType());
+            em.persist(str);
+        }
+        Address addr = metadata.create(Address.class);
+        addr.setStreet(str);
+        addr.setCoordinates(p);
+        addr.setStreetNumber(addrInfo.getStreetNumber());
+        addr.setAddressParams(addrInfo.getAddressParams());
+        em.persist(addr);
+        return true;
+    }
+
+    @Override
+    @Transactional
     public boolean isAddressInDB(AddressInfo addrInfo) {
         return isAddressExist(persistence.getEntityManager(),addrInfo);
     }
