@@ -4,5 +4,6 @@
         <item screen="eco_BuildingFieldInspector.browse"/>
         <item screen="eco_Organization.browse"/>
         <item screen="eco_Street.browse"/>
+        <item screen="eco_Building.browse"/>
     </menu>
 </menu-config>

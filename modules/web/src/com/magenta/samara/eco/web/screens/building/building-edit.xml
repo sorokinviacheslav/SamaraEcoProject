@@ -8,8 +8,16 @@
                   class="com.magenta.samara.eco.entity.Building"
                   view="building-view_2">
             <loader/>
-            <collection id="organizationsDc" property="organizations"/>
         </instance>
+        <collection id="organizationsDc"
+                  class="com.magenta.samara.eco.entity.Organization"
+                  view="_local">
+            <loader id="buildingsDl">
+                <query>
+                    <![CDATA[select e from eco_Organization e]]>
+                </query>
+            </loader>
+        </collection>
     </data>
     <dialogMode height="600"
                 width="800"/>
@@ -17,6 +25,7 @@
         <form id="form" dataContainer="buildingDc">
             <column width="250px">
                 <textField id="descriptionField" property="description"/>
+                <checkBoxGroup optionsContainer="organizationsDc" property="organizations"/>
             </column>
         </form>
         <hbox id="editActions" spacing="true">
