@@ -27,10 +27,14 @@
     </view>
     <view entity="eco_Organization" name="organization-view" extends="_local">
         <property name="buildings" view="_minimal"/>
+        <property name="image" view="_local"/>
     </view>
     <view entity="eco_Building" name="building-field-inspector-view-create" extends="_local">
         <property name="address" view="_local"/>
         <property name="organizations" view="_local"/>
     </view>
-    <view entity="eco_Organization" name="organization-view_1" extends="_local"/>
+    <view entity="eco_Organization" name="organization-view_1" extends="_local">
+        <property name="buildings" view="_minimal"/>
+        <property name="image" view="_local"/>
+    </view>
 </views>

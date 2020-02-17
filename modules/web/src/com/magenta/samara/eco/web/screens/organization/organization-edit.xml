@@ -18,6 +18,11 @@
                 <textField id="nameField" property="name"/>
                 <textField id="innField" property="inn"/>
                 <textField id="descriptionField" property="description"/>
+                <image id="image"
+                       width="100%"
+                       align="MIDDLE_CENTER"
+                       scaleMode="CONTAIN"
+                       property="image"/>
             </column>
         </form>
         <hbox id="editActions" spacing="true">

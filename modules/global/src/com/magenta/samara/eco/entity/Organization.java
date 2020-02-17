@@ -1,15 +1,18 @@
 package com.magenta.samara.eco.entity;
 
 import com.haulmont.chile.core.annotations.NamePattern;
+import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import com.haulmont.cuba.core.entity.annotation.OnDelete;
 import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
+import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
 import com.haulmont.cuba.core.global.DeletePolicy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
+@PublishEntityChangedEvents
 @NamePattern("%s %s %s|name,inn,description")
 @Table(name = "ECO_ORGANIZATION")
 @Entity(name = "eco_Organization")
@@ -27,6 +30,10 @@ public class Organization extends StandardEntity {
     @Column(name = "DESCRIPTION", nullable = false, length = 1000)
     protected String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IMAGE_FILE_ID")
+    protected FileDescriptor image;
+
     @JoinTable(name = "ECO_BUILDING_ORGANIZATION_LINK",
             joinColumns = @JoinColumn(name = "ORGANIZATION_ID"),
             inverseJoinColumns = @JoinColumn(name = "BUILDING_ID"))
@@ -34,6 +41,14 @@ public class Organization extends StandardEntity {
     @OnDelete(DeletePolicy.UNLINK)
     @ManyToMany
     protected Set<Building> buildings;
+
+    public FileDescriptor getImage() {
+        return image;
+    }
+
+    public void setImage(FileDescriptor image) {
+        this.image = image;
+    }
 
     public Set<Building> getBuildings() {
         return buildings;

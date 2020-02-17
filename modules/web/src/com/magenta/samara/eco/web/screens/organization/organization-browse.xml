@@ -43,10 +43,7 @@
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
             </actions>
-            <columns>
-                <column id="name"/>
-                <column id="inn"/>
-                <column id="description"/>
+            <columns includeAll="true" exclude="buildings">
             </columns>
             <rowsCount/>
             <buttonsPanel id="buttonsPanel"
