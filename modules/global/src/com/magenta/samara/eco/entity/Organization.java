@@ -10,6 +10,7 @@ import com.haulmont.cuba.core.global.DeletePolicy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Set;
 
 @PublishEntityChangedEvents
@@ -29,6 +30,18 @@ public class Organization extends StandardEntity {
     @NotNull
     @Column(name = "DESCRIPTION", nullable = false, length = 1000)
     protected String description;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "DATE")
+    protected Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IMAGE_FILE_ID")

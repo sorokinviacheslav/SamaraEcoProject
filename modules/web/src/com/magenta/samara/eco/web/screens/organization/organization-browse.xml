@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
         caption="msg://browseCaption"
         focusComponent="organizationsTable"
         messagesPack="com.magenta.samara.eco.web.screens.organization">
@@ -10,13 +11,26 @@
             <loader id="organizationsDl">
                 <query>
                     <![CDATA[select e from eco_Organization e]]>
+                    <condition>
+                        <and>
+                            <c:jpql>
+                                <c:where>e.date=:component_dateField</c:where>
+                            </c:jpql>
+                            <c:jpql>
+                                <c:where>e.inn=:component_innField1</c:where>
+                            </c:jpql>
+                        </and>
+                    </condition>
                 </query>
             </loader>
         </collection>
     </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="organizationsTable"
+    <layout expand="hBox"
             spacing="true">
         <filter id="filter"
                 applyTo="organizationsTable"
@@ -35,9 +49,13 @@
             </custom>
         </filter>
         <textArea id="testTextArea"></textArea>
+        <hbox id="hBox" spacing="true" margin="true" height="100%">
+            <vbox id="vBox1" spacing="true" margin="true" width="100%">
         <groupTable id="organizationsTable"
                     width="100%"
-                    dataContainer="organizationsDc">
+                    height="100%"
+                    dataContainer="organizationsDc"
+        align="TOP_LEFT">
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
@@ -53,7 +71,21 @@
                 <button id="removeBtn" action="organizationsTable.remove"/>
             </buttonsPanel>
         </groupTable>
-        <hbox id="lookupActions" spacing="true" visible="false">
+            </vbox>
+        <vbox id="vBox2" spacing="true" margin="true" width="100%">
+            <datePicker id="datePicker"
+                        dataContainer="organizationsDc"
+                        property="date"
+                        editable="false"/>
+            <groupBox caption="Быстрые фильтры" collapsable="true">
+                <form id="filtersForm">
+                    <dateField id="dateField" caption="Дата"/>
+                    <textField id="innField1" caption="ИНН"/>
+                </form>
+            </groupBox>
+        </vbox>
+        </hbox>
+        <hbox id="lookupActions" spacing="true" visible="false" width="100%">
             <button action="lookupSelectAction"/>
             <button action="lookupCancelAction"/>
         </hbox>

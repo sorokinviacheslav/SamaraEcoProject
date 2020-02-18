@@ -18,6 +18,7 @@
                 <textField id="nameField" property="name"/>
                 <textField id="innField" property="inn"/>
                 <textField id="descriptionField" property="description"/>
+                <dateField id="dateField" property="date"/>
                 <image id="image"
                        width="100%"
                        align="MIDDLE_CENTER"

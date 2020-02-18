@@ -48,6 +48,7 @@ create table ECO_ORGANIZATION (
     NAME varchar(255) not null,
     INN varchar(20),
     DESCRIPTION varchar(1000) not null,
+    DATE date,
     IMAGE_FILE_ID uuid,
     --
     primary key (ID)
