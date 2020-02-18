@@ -3,6 +3,8 @@ package com.magenta.samara.eco.web.screens.organization;
 import com.haulmont.chile.core.model.MetaClass;
 import com.haulmont.chile.core.model.MetaPropertyPath;
 import com.haulmont.cuba.core.global.Metadata;
+import com.haulmont.cuba.gui.ScreenBuilders;
+import com.haulmont.cuba.gui.Screens;
 import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.model.CollectionContainer;
@@ -12,6 +14,7 @@ import com.haulmont.cuba.gui.screen.LookupComponent;
 import com.magenta.samara.eco.entity.Organization;
 import com.magenta.samara.eco.mentionjs.MentionJsExtension;
 import com.magenta.samara.eco.sliderjs.SliderServerComponent;
+import com.magenta.samara.eco.web.screens.building.BuildingBrowse;
 import com.vaadin.ui.Layout;
 
 import javax.inject.Inject;
@@ -39,6 +42,27 @@ public class OrganizationBrowse extends StandardLookup<Organization> {
     private CheckBox descr;
     @Inject
     private Metadata metadata;
+    @Inject
+    private ScreenBuilders screenBuilders;
+    @Inject
+    private PopupButton popupButton;
+
+    @Subscribe("organizationsTable.lookupBuildings")
+    public void onOrganizationsTableLookupBuildings(Action.ActionPerformedEvent event) {
+        if(organizationsTable.getSingleSelected()!=null) {
+            BuildingBrowse screen = screenBuilders.screen(this)
+                    .withScreenClass(BuildingBrowse.class)
+                    .withOpenMode(OpenMode.DIALOG)
+                    .build();
+            screen.setOrganization(organizationsTable.getSingleSelected());
+            screen.show();
+        }
+    }
+
+    @Subscribe("organizationsTable")
+    public void onOrganizationsTableSelection(Table.SelectionEvent<Organization> event) {
+        popupButton.setEnabled(organizationsTable.getSingleSelected()!=null);
+    }
 
     @Subscribe("clear")
     public void onClearClick(Button.ClickEvent event) {
@@ -83,10 +107,6 @@ public class OrganizationBrowse extends StandardLookup<Organization> {
         date.setValue(false);
         descr.setValue(false);
     }
-
-
-
-
 
     private void dropFilter() {
         organizationsDl.removeParameter("date");
