@@ -88,6 +88,7 @@ configure(coreModule) {
 
     dependencies {
         compile(globalModule)
+        compile('commons-net:commons-net:3.6')
         compileOnly(servletApi)
         jdbc(postgres)
         testRuntime(postgres)

@@ -1,14 +1,21 @@
 package com.magenta.samara.eco.web.screens.organization;
 
-import com.haulmont.cuba.gui.components.TextArea;
+import com.haulmont.chile.core.model.MetaClass;
+import com.haulmont.chile.core.model.MetaPropertyPath;
+import com.haulmont.cuba.core.global.Metadata;
+import com.haulmont.cuba.gui.UiComponents;
+import com.haulmont.cuba.gui.components.*;
 import com.haulmont.cuba.gui.model.CollectionContainer;
+import com.haulmont.cuba.gui.model.CollectionLoader;
 import com.haulmont.cuba.gui.screen.*;
+import com.haulmont.cuba.gui.screen.LookupComponent;
 import com.magenta.samara.eco.entity.Organization;
 import com.magenta.samara.eco.mentionjs.MentionJsExtension;
 import com.magenta.samara.eco.sliderjs.SliderServerComponent;
 import com.vaadin.ui.Layout;
 
 import javax.inject.Inject;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,11 +26,75 @@ import java.util.List;
 public class OrganizationBrowse extends StandardLookup<Organization> {
 
     @Inject
-    private TextArea<String> testTextArea;
+    private CollectionLoader<Organization> organizationsDl;
     @Inject
     private CollectionContainer<Organization> organizationsDc;
+    @Inject
+    private GroupTable<Organization> organizationsTable;
+    @Inject
+    private DateField<Date> dateField;
+    @Inject
+    private CheckBox date;
+    @Inject
+    private CheckBox descr;
+    @Inject
+    private Metadata metadata;
 
-    @Subscribe
+    @Subscribe("clear")
+    public void onClearClick(Button.ClickEvent event) {
+        dateField.setValue(null);
+        dropFilter();
+    }
+
+    @Subscribe("apply")
+    public void onApplyClick(Button.ClickEvent event) {
+        if(dateField.getValue()!=null) {
+            organizationsDl.setQuery("select o from eco_Organization o where o.date=:date");
+            organizationsDl.setParameter("date",dateField.getValue() );
+            organizationsDl.load();
+        }
+        else {
+            dropFilter();
+        }
+    }
+
+    @Subscribe("apply1")
+    public void onApply1Click(Button.ClickEvent event) {
+        MetaClass userClass = metadata.getClassNN(Organization.class);
+        List<Object> props = new ArrayList<>(2);
+        if(descr.getValue()) {
+            MetaPropertyPath groupNameProp = userClass.getPropertyPath("description");
+            props.add(groupNameProp);
+        }
+        if(date.getValue()) {
+            MetaPropertyPath groupNameProp = userClass.getPropertyPath("date");
+            props.add(groupNameProp);
+        }
+        if(props.size()<1) {
+            organizationsTable.ungroup();
+            return;
+        }
+        organizationsTable.groupBy(props.toArray());
+    }
+
+    @Subscribe("clear1")
+    public void onClear1Click(Button.ClickEvent event) {
+        organizationsTable.ungroup();
+        date.setValue(false);
+        descr.setValue(false);
+    }
+
+
+
+
+
+    private void dropFilter() {
+        organizationsDl.removeParameter("date");
+        organizationsDl.setQuery("select o from eco_Organization o");
+        organizationsDl.load();
+    }
+
+    /*@Subscribe
     public void onAfterShow(AfterShowEvent event) {
         com.vaadin.ui.TextArea vTextArea = testTextArea.unwrap(com.vaadin.ui.TextArea.class);
         // enable extension
@@ -40,14 +111,14 @@ public class OrganizationBrowse extends StandardLookup<Organization> {
         });
         slider.setMinValue(0.0);
         slider.setMaxValue(10.0);
-        slider.setWidth("250px");
+        slider.setWidth("250px");*/
         /*slider.setListener(newValue -> {
             getEditedEntity().setMinDiscount(newValue[0]);
             getEditedEntity().setMaxDiscount(newValue[1]);
         });*/
 
-        this.getWindow().unwrap(Layout.class).addComponent(slider);
-    }
+        /*this.getWindow().unwrap(Layout.class).addComponent(slider);
+    }*/
 
 
 

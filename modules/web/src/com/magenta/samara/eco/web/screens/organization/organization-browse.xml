@@ -11,17 +11,7 @@
             <loader id="organizationsDl">
                 <query>
                     <![CDATA[select e from eco_Organization e]]>
-                    <condition>
-                        <and>
-                            <c:jpql>
-                                <c:where>e.date=:component_dateField</c:where>
-                            </c:jpql>
-                            <c:jpql>
-                                <c:where>e.inn=:component_innField1</c:where>
-                            </c:jpql>
-                        </and>
-                    </condition>
-                </query>
+                 </query>
             </loader>
         </collection>
     </data>
@@ -32,30 +22,11 @@
                 width="800"/>
     <layout expand="hBox"
             spacing="true">
-        <filter id="filter"
-                applyTo="organizationsTable"
-                dataLoader="organizationsDl">
-            <properties include=".*"/>
-            <custom name="name"
-                    caption="Find by name"
-                    paramClass="java.lang.String">
-                lower({E}.name) like concat('%', ?, '%')
-            </custom>
-            <custom name="building"
-                    caption="Find by address"
-                    paramClass="java.lang.String"
-            join="join {E}.buildings b}">
-                lower(b.address.street.name) like concat('%', ?, '%') or upper(b.address.street.name) like concat('%', ?, '%') or b.address.street.name like concat('%', ?, '%')
-            </custom>
-        </filter>
-        <textArea id="testTextArea"></textArea>
-        <hbox id="hBox" spacing="true" margin="true" height="100%">
-            <vbox id="vBox1" spacing="true" margin="true" width="100%">
-        <groupTable id="organizationsTable"
+        <hbox id="hBox" spacing="true" height="100%" width="100%">
+                <groupTable id="organizationsTable"
                     width="100%"
                     height="100%"
-                    dataContainer="organizationsDc"
-        align="TOP_LEFT">
+                    dataContainer="organizationsDc">
             <actions>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
@@ -64,24 +35,37 @@
             <columns includeAll="true" exclude="buildings">
             </columns>
             <rowsCount/>
-            <buttonsPanel id="buttonsPanel"
-                          alwaysVisible="true">
-                <button id="createBtn" action="organizationsTable.create"/>
-                <button id="editBtn" action="organizationsTable.edit"/>
-                <button id="removeBtn" action="organizationsTable.remove"/>
-            </buttonsPanel>
+                    <buttonsPanel id="buttonsPanel"
+                                  alwaysVisible="true">
+                        <button id="createBtn" action="organizationsTable.create"/>
+                        <button id="editBtn" action="organizationsTable.edit"/>
+                        <button id="removeBtn" action="organizationsTable.remove"/>
+                    </buttonsPanel>
         </groupTable>
-            </vbox>
-        <vbox id="vBox2" spacing="true" margin="true" width="100%">
+        <vbox id="vBox2" spacing="true" width="100%">
             <datePicker id="datePicker"
                         dataContainer="organizationsDc"
                         property="date"
                         editable="false"/>
-            <groupBox caption="Быстрые фильтры" collapsable="true">
-                <form id="filtersForm">
-                    <dateField id="dateField" caption="Дата"/>
-                    <textField id="innField1" caption="ИНН"/>
-                </form>
+            <groupBox id="filter" collapsable="true" width="300px" caption="Быстрые фильтры" height="AUTO">
+                <vbox spacing="true">
+                    <label value="Дата"/>
+                    <dateField id="dateField"/>
+                    <buttonsPanel>
+                        <button id="apply" caption="Применить"/>
+                        <button id="clear" caption="Сбросить"/>
+                    </buttonsPanel>
+                </vbox>
+            </groupBox>
+            <groupBox id="group" collapsable="true" width="300px" caption="Быстрые группировки" height="AUTO">
+                <vbox spacing="true">
+                    <checkBox id="descr" caption="Описание"/>
+                    <checkBox id="date" caption="Дата"/>
+                    <buttonsPanel>
+                        <button id="apply1" caption="Применить"/>
+                        <button id="clear1" caption="Сбросить"/>
+                    </buttonsPanel>
+                </vbox>
             </groupBox>
         </vbox>
         </hbox>
