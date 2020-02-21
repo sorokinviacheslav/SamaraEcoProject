@@ -31,8 +31,6 @@ public class OrganizationBrowse extends StandardLookup<Organization> {
     @Inject
     private CollectionLoader<Organization> organizationsDl;
     @Inject
-    private CollectionContainer<Organization> organizationsDc;
-    @Inject
     private GroupTable<Organization> organizationsTable;
     @Inject
     private DateField<Date> dateField;
