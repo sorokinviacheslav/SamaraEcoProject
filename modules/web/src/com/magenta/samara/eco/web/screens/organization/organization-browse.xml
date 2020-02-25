@@ -28,6 +28,7 @@
                     height="100%"
                     dataContainer="organizationsDc">
             <actions>
+                <action id="refresh" type="refresh"/>
                 <action id="create" type="create"/>
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
@@ -38,6 +39,7 @@
             <rowsCount/>
                     <buttonsPanel id="buttonsPanel"
                                   alwaysVisible="true">
+                        <button id="refreshBtn" action="organizationsTable.refresh"/>
                         <button id="createBtn" action="organizationsTable.create"/>
                         <button id="editBtn" action="organizationsTable.edit"/>
                         <button id="removeBtn" action="organizationsTable.remove"/>
