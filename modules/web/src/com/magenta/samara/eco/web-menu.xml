@@ -5,5 +5,7 @@
         <item screen="eco_Organization.browse"/>
         <item screen="eco_Street.browse"/>
         <item screen="eco_Building.browse"/>
+        <item screen="eco_Address.browse"/>
+        <item screen="eco_Point.browse"/>
     </menu>
 </menu-config>

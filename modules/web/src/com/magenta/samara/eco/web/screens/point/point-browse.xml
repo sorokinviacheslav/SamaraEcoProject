@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://browseCaption"
+        focusComponent="pointsTable"
+        messagesPack="com.magenta.samara.eco.web.screens.point">
+    <data readOnly="true">
+        <collection id="pointsDc"
+                    class="com.magenta.samara.eco.entity.Point"
+                    view="_local">
+            <loader id="pointsDl">
+                <query>
+                    <![CDATA[select e from eco_Point e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="pointsTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="pointsTable"
+                dataLoader="pointsDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="pointsTable"
+                    width="100%"
+                    dataContainer="pointsDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="longitude"/>
+                <column id="latitude"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="pointsTable.create"/>
+                <button id="editBtn" action="pointsTable.edit"/>
+                <button id="removeBtn" action="pointsTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

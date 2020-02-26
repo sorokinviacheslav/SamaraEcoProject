@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://editorCaption"
+        focusComponent="form"
+        messagesPack="com.magenta.samara.eco.web.screens.address">
+    <data>
+        <instance id="addressDc"
+                  class="com.magenta.samara.eco.entity.Address"
+                  view="address-view">
+            <loader/>
+        </instance>
+        <collection id="streetsDc"
+                    class="com.magenta.samara.eco.entity.Street">
+            <loader id="streetsDl">
+                <query>
+                    <![CDATA[select e from eco_Street e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="tabSheet" spacing="true">
+        <tabSheet id="tabSheet">
+            <tab id="mainTab" caption="Address" margin="true" spacing="true">
+                <form id="form" dataContainer="addressDc">
+                    <column width="250px">
+                        <pickerField id="coordinatesField" property="coordinates">
+                            <actions>
+                                <action id="lookup" type="picker_lookup"/>
+                                <action id="clear" type="picker_clear"/>
+                            </actions>
+                        </pickerField>
+                        <textField id="streetNumberField" property="streetNumber"/>
+                        <textField id="addressParamsField" property="addressParams"/>
+                    </column>
+                </form>
+            </tab>
+            <tab id="additionalTab" caption="Street" margin="true" spacing="true">
+                 <form id="streetForm" dataContainer="streetsDc">
+                    <column width="250px">
+                        <lookupPickerField id="streetField" dataContainer="addressDc" property="street" optionsContainer="streetsDc">
+                            <actions>
+                                <action id="lookup" type="picker_lookup"/>
+                                <action id="clear" type="picker_clear"/>
+                            </actions>
+                        </lookupPickerField>
+                        <textField id="streetName" property="name"/>
+                        <lookupField id="streetType" property="streetType" optionsEnum="com.magenta.samara.eco.entity.StreetType"/>
+                    </column>
+                </form>
+            </tab>
+        </tabSheet>
+        <hbox id="editActions" spacing="true">
+            <button action="windowCommitAndClose"/>
+            <button action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

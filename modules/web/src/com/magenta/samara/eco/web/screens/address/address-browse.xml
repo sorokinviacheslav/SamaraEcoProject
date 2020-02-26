@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://browseCaption"
+        focusComponent="addressesTable"
+        messagesPack="com.magenta.samara.eco.web.screens.address">
+    <data readOnly="true">
+        <collection id="addressesDc"
+                    class="com.magenta.samara.eco.entity.Address"
+                    view="address-view">
+            <loader id="addressesDl">
+                <query>
+                    <![CDATA[select e from eco_Address e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="addressesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="addressesTable"
+                dataLoader="addressesDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="addressesTable"
+                    width="100%"
+                    dataContainer="addressesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="coordinates"/>
+                <column id="street"/>
+                <column id="streetNumber"/>
+                <column id="addressParams"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="addressesTable.create"/>
+                <button id="editBtn" action="addressesTable.edit"/>
+                <button id="removeBtn" action="addressesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>
