@@ -39,18 +39,20 @@
                 <button action="windowClose"/>
             </tab>
             <tab id="additionalTab" caption="Street" margin="true" spacing="true" enable="false">
+                <vbox spacing="true" margin="true">
+                <lookupPickerField id="streetField" dataContainer="addressDc" property="street" optionsContainer="streetsDc" caption="Улица">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </lookupPickerField>
                  <form id="streetForm" dataContainer="streetsDc">
                     <column width="250px">
-                        <lookupPickerField id="streetField" dataContainer="addressDc" property="street" optionsContainer="streetsDc">
-                            <actions>
-                                <action id="lookup" type="picker_lookup"/>
-                                <action id="clear" type="picker_clear"/>
-                            </actions>
-                        </lookupPickerField>
                         <textField id="streetName" property="name"/>
                         <lookupField id="streetType" property="streetType" optionsEnum="com.magenta.samara.eco.entity.StreetType"/>
                         </column>
                 </form>
+                </vbox>
                 <button id="backButton" caption="Назад"></button>
                 <hbox id="editActions" spacing="true">
                     <button action="windowCommitAndClose"/>
