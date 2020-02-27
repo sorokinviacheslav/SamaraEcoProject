@@ -344,12 +344,40 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         }
     }
 
+    private List<MyMarker> getMyMarkers(MapViewer m) {
+        List<MyMarker> myMarkers=new ArrayList<>();
+        for(Marker mark:m.getMarkers()) {
+            myMarkers.add(new MyMarker(mark));
+        }
+        return myMarkers;
+    }
+
+    private double distance(double x,double y,double xX,double yY) {
+        return Math.pow(x-xX,2.0)+Math.pow(y-yY,2.0);
+    }
+
+    private boolean isRowAlreadyExist(Set<MyMarker> row,List<Set<MyMarker>> neighbourTable) {
+        if(neighbourTable.size()>0) {
+            for (Set<MyMarker> list:neighbourTable) {
+                if(list.equals(row)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private int calculateRealSize(Set<MyMarker> row) {
+        int size=0;
+        for(MyMarker m:row) {
+            if(!m.isProcessed()) size+=1;
+        }
+        return size;
+    }
+
     private void clusterizeMapMarkers() {
         if(map.getMarkers()==null||map.getMarkers().size()<1) return;
-        List<MyMarker> myMarkers=new ArrayList<>();
-        for(Marker m:map.getMarkers()) {
-            myMarkers.add(new MyMarker(m));
-        }
+        List<MyMarker> myMarkers= getMyMarkers(map);
         List<Set<MyMarker>> neighbourTable = new ArrayList<>();
         for(MyMarker m: myMarkers) {
             double x = m.getMarker().getPosition().getLatitude();
@@ -360,20 +388,11 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
                 if(m.equals(n)) continue;
                 double xX = n.getMarker().getPosition().getLatitude();
                 double yY = n.getMarker().getPosition().getLongitude();
-                if(Math.pow(x-xX,2.0)+Math.pow(y-yY,2.0)<=Math.pow(0.008,2.0)) {
+                if(distance(x,y,xX,yY)<=Math.pow(0.008,2.0)) {
                     neighbours.add(n);
                 }
             }
-            boolean equal = false;
-            if(neighbourTable.size()>0) {
-                for (Set<MyMarker> list:neighbourTable) {
-                    if(list.equals(neighbours)) {
-                        equal=true;
-                        break;
-                    }
-                }
-            }
-            if(equal) {
+            if(isRowAlreadyExist(neighbours,neighbourTable)) {
                 continue;
             }
             neighbourTable.add(neighbours);
@@ -385,17 +404,9 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         for(int i=0;i<neighbourTable.size();i++) {
             Set<MyMarker> row=neighbourTable.get(i);
             Circle circle;
-            int size = 0;
-            for(MyMarker m:row) {
-               if(!m.isProcessed()) size+=1;
-            }
+            int size = calculateRealSize(row);
             if (size == 0) continue;
-            /*if (size == 1) {
-                circle = map.createCircle(((MyMarker) row.toArray()[0]).getMarker().getPosition(), 100.0);
-                circle.setFillOpacity(0.5);
-                map.addCircleOverlay(circle);
-                ((MyMarker) row.toArray()[0]).setProcessed(true);
-            }*/ else {
+            else {
                 double xAvg=0.0;
                 double yAvg=0.0;
                 for(MyMarker point: row) {
@@ -411,9 +422,7 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
             }
             circles.add(circle);
         }
-        for (MyMarker m : myMarkers) {
-            map.removeMarker(m.getMarker());
-        }
+        map.clearMarkers();
     }
 
 
