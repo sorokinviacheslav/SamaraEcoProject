@@ -31,7 +31,11 @@ public class AddressManipulationServiceBean implements AddressManipulationServic
     @Transactional
     public boolean addNewBuilding(AddressInfo addrInfo, BuildingInfo bldInfo) {
         EntityManager em = persistence.getEntityManager();
-        if(isAddressExist(em,addrInfo)) return false;
+        Address addr = getAddress(em,addrInfo);
+        if(addr!=null) {
+            em.persist(createBuilding(addr,bldInfo.getDescription()));
+            return true;
+        }
         String par = "Самара, "+addrInfo.getStreetName()+" "+messages.getMessage(addrInfo.getStreetType())+" "+addrInfo.getStreetNumber()+" "+addrInfo.getAddressParams();
         JSONObject json = null;
         try {
@@ -53,17 +57,21 @@ public class AddressManipulationServiceBean implements AddressManipulationServic
             str.setStreetType(addrInfo.getStreetType());
             em.persist(str);
         }
-        Address addr = metadata.create(Address.class);
+        addr = metadata.create(Address.class);
         addr.setStreet(str);
         addr.setCoordinates(p);
         addr.setStreetNumber(addrInfo.getStreetNumber());
         addr.setAddressParams(addrInfo.getAddressParams());
         em.persist(addr);
+        em.persist(createBuilding(addr,bldInfo.getDescription()));
+        return true;
+    }
+
+    private Building createBuilding(Address addr,String description) {
         Building bld = metadata.create(Building.class);
         bld.setAddress(addr);
-        bld.setDescription(bldInfo.getDescription());
-        em.persist(bld);
-        return true;
+        bld.setDescription(description);
+        return bld;
     }
 
     @Override
@@ -119,15 +127,18 @@ public class AddressManipulationServiceBean implements AddressManipulationServic
     }
 
     private boolean isAddressExist(EntityManager em,AddressInfo addrInfo) {
-        int existing = em.createQuery(
+        return getAddress(em,addrInfo)!=null;
+    }
+
+    private Address getAddress(EntityManager em,AddressInfo addrInfo) {
+        Address address = (Address)em.createQuery(
                 "select a from eco_Address a where a.street.name=:street and a.street.streetType=:streetType and a.streetNumber=:number and a.addressParams=:addressParams")
                 .setParameter("street", addrInfo.getStreetName())
                 .setParameter("streetType",addrInfo.getStreetType())
                 .setParameter("number",addrInfo.getStreetNumber())
                 .setParameter("addressParams",addrInfo.getAddressParams())
-                .getResultList()
-                .size();
-        return !(existing < 1);
+                .getFirstResult();
+        return address;
     }
 
     private Street getStreet(EntityManager em,String streetName, StreetType streetType) {

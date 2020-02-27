@@ -3,6 +3,7 @@ package com.magenta.samara.eco.web.screens.building;
 import com.haulmont.charts.gui.components.map.MapViewer;
 import com.haulmont.charts.gui.map.model.*;
 import com.haulmont.charts.gui.map.model.base.MarkerImage;
+import com.haulmont.charts.web.gui.components.map.google.MarkerDelegate;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.Messages;
 import com.haulmont.cuba.core.global.Metadata;
@@ -24,6 +25,7 @@ import com.magenta.samara.eco.service.AddressManipulationService;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @UiController("eco_BuildingFieldInspector.browse")
 @UiDescriptor("building-field-inspector-browse.xml")
@@ -206,12 +208,12 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
                         addr.getStreetNumber(),
                         ""
                 );
-        if(addressManipulationService.isAddressInDB(addrInfo)) {
+        /*if(addressManipulationService.isAddressInDB(addrInfo)) {
            notifications.create(Notifications.NotificationType.WARNING)
                     .withCaption("По данному адресу уже есть здание!")
                     .show();
             return;
-        }
+        }*/
         dialogs.createInputDialog(this)
                 .withCaption("Добавить здание по адресу: "+messages.getMessage(str.getStreetType())+" "+str.getName()+" "+addr.getStreetNumber())
                 .withParameter(
@@ -309,7 +311,7 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
     }
 
     //comment this to remove test clastorization
-    /*@Subscribe("map")
+    @Subscribe("map")
     public void onMapMapMove(MapViewer.MapMoveEvent event) {
         for(Circle c:circles) {
             map.removeCircleOverlay(c);
@@ -321,72 +323,100 @@ public class BuildingFieldInspectorBrowse extends StandardLookup<Building> {
         }
     }
 
+    private class MyMarker {
+        private Marker marker;
+        private boolean processed = false;
+
+        MyMarker(Marker marker) {
+            this.marker=marker;
+        }
+
+        public boolean isProcessed() {
+            return processed;
+        }
+
+        public void setProcessed(boolean processed) {
+            this.processed = processed;
+        }
+
+        public Marker getMarker() {
+            return marker;
+        }
+    }
+
     private void clusterizeMapMarkers() {
         if(map.getMarkers()==null||map.getMarkers().size()<1) return;
-        Collection<Marker> markers=map.getMarkers();
-        List<Set<Marker>> neighbourTable = new ArrayList<>();
-        for(Marker m: markers) {
-            double x = m.getPosition().getLatitude();
-            double y = m.getPosition().getLongitude();
-            Set<Marker> neighbours =new HashSet<>();
+        List<MyMarker> myMarkers=new ArrayList<>();
+        for(Marker m:map.getMarkers()) {
+            myMarkers.add(new MyMarker(m));
+        }
+        List<Set<MyMarker>> neighbourTable = new ArrayList<>();
+        for(MyMarker m: myMarkers) {
+            double x = m.getMarker().getPosition().getLatitude();
+            double y = m.getMarker().getPosition().getLongitude();
+            Set<MyMarker> neighbours =new HashSet<>();
             neighbours.add(m);
-            for(Marker n: markers) {
+            for(MyMarker n: myMarkers) {
                 if(m.equals(n)) continue;
-                double xX = n.getPosition().getLatitude();
-                double yY = n.getPosition().getLongitude();
-                if(neighbours.size()>2) break;
-                if(Math.sqrt(Math.pow(x-xX,2.0)+Math.pow(y-yY,2.0))<=30.0) {
+                double xX = n.getMarker().getPosition().getLatitude();
+                double yY = n.getMarker().getPosition().getLongitude();
+                if(Math.pow(x-xX,2.0)+Math.pow(y-yY,2.0)<=Math.pow(0.008,2.0)) {
                     neighbours.add(n);
                 }
             }
+            boolean equal = false;
             if(neighbourTable.size()>0) {
-                boolean equal = false;
-                for (Set<Marker> list:neighbourTable) {
+                for (Set<MyMarker> list:neighbourTable) {
                     if(list.equals(neighbours)) {
                         equal=true;
                         break;
                     }
                 }
-                if(!equal) {
-                    neighbourTable.add(neighbours);
-                }
             }
-            else {
-                neighbourTable.add(neighbours);
+            if(equal) {
+                continue;
             }
+            neighbourTable.add(neighbours);
         }
-        for(Set<Marker> row:neighbourTable) {
+        neighbourTable.sort((Set<MyMarker> o1,Set<MyMarker> o2)->{
+            if(o1.size()==o2.size()) return 0;
+            return o1.size()<o2.size()?-1:1;
+        });
+        for(int i=0;i<neighbourTable.size();i++) {
+            Set<MyMarker> row=neighbourTable.get(i);
             Circle circle;
-            if (row.size() == 1) {
-                circle = map.createCircle(((Marker) row.toArray()[0]).getPosition(), 100.0);
+            int size = 0;
+            for(MyMarker m:row) {
+               if(!m.isProcessed()) size+=1;
+            }
+            if (size == 0) continue;
+            /*if (size == 1) {
+                circle = map.createCircle(((MyMarker) row.toArray()[0]).getMarker().getPosition(), 100.0);
                 circle.setFillOpacity(0.5);
                 map.addCircleOverlay(circle);
-                map.removeMarker((Marker) row.toArray()[0]);
-            } else if (row.size() == 2) {
-                double x1 = ((Marker) row.toArray()[0]).getPosition().getLatitude();
-                double y1 = ((Marker) row.toArray()[0]).getPosition().getLongitude();
-                double x2 = ((Marker) row.toArray()[1]).getPosition().getLatitude();
-                double y2 = ((Marker) row.toArray()[1]).getPosition().getLongitude();
-                circle = map.createCircle(map.createGeoPoint((x1 + x2) / 2.0, (y1 + y2) / 2.0), 200.0);
+                ((MyMarker) row.toArray()[0]).setProcessed(true);
+            }*/ else {
+                double xAvg=0.0;
+                double yAvg=0.0;
+                for(MyMarker point: row) {
+                    if(!point.isProcessed()) {
+                        xAvg += point.getMarker().getPosition().getLatitude();
+                        yAvg += point.getMarker().getPosition().getLongitude();
+                        point.setProcessed(true);
+                    }
+                }
+                circle = map.createCircle(map.createGeoPoint(xAvg/size, yAvg/size), Math.log(size)*150.0+100.0);
                 circle.setFillOpacity(0.5);
                 map.addCircleOverlay(circle);
-                map.removeMarker((Marker) row.toArray()[0]);
-                map.removeMarker((Marker) row.toArray()[1]);
-            } else {
-                double x1 = ((Marker) row.toArray()[0]).getPosition().getLatitude();
-                double y1 = ((Marker) row.toArray()[0]).getPosition().getLongitude();
-                double x2 = ((Marker) row.toArray()[1]).getPosition().getLatitude();
-                double y2 = ((Marker) row.toArray()[1]).getPosition().getLongitude();
-                circle = map.createCircle(map.createGeoPoint((x1 + x2) / 2.0, (y1 + y2) / 2.0), 400.0);
-                circle.setFillOpacity(0.5);
-                map.addCircleOverlay(circle);
-                map.removeMarker((Marker) row.toArray()[0]);
-                map.removeMarker((Marker) row.toArray()[1]);
-                map.removeMarker((Marker) row.toArray()[2]);
-                            }
+            }
             circles.add(circle);
         }
-    }*/
+        for (MyMarker m : myMarkers) {
+            map.removeMarker(m.getMarker());
+        }
+    }
+
+
 
 
 }

@@ -33,9 +33,9 @@
                         </pickerField>
                         <textField id="streetNumberField" property="streetNumber"/>
                         <textField id="addressParamsField" property="addressParams"/>
-                        <button id="nextButton" caption="Далее"></button>
-                    </column>
+                        </column>
                 </form>
+                <button id="nextButton" caption="Далее"></button>
                 <button action="windowClose"/>
             </tab>
             <tab id="additionalTab" caption="Street" margin="true" spacing="true" enable="false">
@@ -49,9 +49,9 @@
                         </lookupPickerField>
                         <textField id="streetName" property="name"/>
                         <lookupField id="streetType" property="streetType" optionsEnum="com.magenta.samara.eco.entity.StreetType"/>
-                        <button id="backButton" caption="Назад"></button>
-                    </column>
+                        </column>
                 </form>
+                <button id="backButton" caption="Назад"></button>
                 <hbox id="editActions" spacing="true">
                     <button action="windowCommitAndClose"/>
                     <button action="windowClose"/>
