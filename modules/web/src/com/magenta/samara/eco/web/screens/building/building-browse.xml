@@ -31,7 +31,11 @@
                 <action id="edit" type="edit"/>
                 <action id="remove" type="remove"/>
             </actions>
-            <columns includeAll="true" exclude="organizations">
+            <columns>
+                <column id="description">
+                </column>
+                <column id="organizations">
+                </column>
             </columns>
             <rowsCount/>
             <buttonsPanel id="buttonsPanel"

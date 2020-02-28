@@ -1,6 +1,7 @@
 package com.magenta.samara.eco.web.screens.building;
 
 import com.haulmont.cuba.gui.WindowParam;
+import com.haulmont.cuba.gui.data.aggregation.AggregationStrategy;
 import com.haulmont.cuba.gui.model.CollectionContainer;
 import com.haulmont.cuba.gui.model.CollectionLoader;
 import com.haulmont.cuba.gui.screen.*;
@@ -8,6 +9,8 @@ import com.magenta.samara.eco.entity.Building;
 import com.magenta.samara.eco.entity.Organization;
 
 import javax.inject.Inject;
+import java.util.Collection;
+import java.util.List;
 
 @UiController("eco_Building.browse")
 @UiDescriptor("building-browse.xml")
@@ -32,6 +35,4 @@ public class BuildingBrowse extends StandardLookup<Building> {
             buildingsDl.load();
         }
     }
-
-    
-}
+   }
